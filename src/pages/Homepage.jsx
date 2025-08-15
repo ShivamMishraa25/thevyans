@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Post from '../components/Post.jsx'
+import { Link } from 'react-router-dom';
 
 function Homepage() {
     // 10 posts, some with multiple images/videos/mix
@@ -111,47 +112,68 @@ function Homepage() {
         }
     ];
 
-    const [navOpen, setNavOpen] = useState(false);
+    const about = {
+        image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=facearea&w=256&q=80",
+        englishContent: "We are The Vyans, a team passionate about sharing knowledge and stories in technology, design, and innovation. Our blog is dedicated to providing valuable insights and inspiration for modern creators and thinkers.",
+        hindiContent: "हम द व्यांस हैं, जो तकनीक, डिज़ाइन और नवाचार में ज्ञान और कहानियाँ साझा करने के लिए समर्पित हैं। हमारा ब्लॉग आधुनिक रचनाकारों और विचारकों के लिए मूल्यवान जानकारी और प्रेरणा प्रदान करता है।"
+    }
+
+    const [navOpen, setNavOpen] = useState(false)
+    const [hindi, setHindi] = useState(false)
+
+    // Hindi/English text for nav, contact, footer, brand
+    const navText = hindi
+        ? { brand: "द व्यांस", about: "परिचय", contact: "संपर्क", login: "लॉगिन" }
+        : { brand: "The Vyans", about: "About", contact: "Contact", login: "Login" }
+    const contactTitle = hindi ? "संपर्क करें" : "Contact Us"
+    const footerText = hindi
+        ? `© ${new Date().getFullYear()} द व्यांस. सर्वाधिकार सुरक्षित.`
+        : `© ${new Date().getFullYear()} The Vyans. All rights reserved.`
 
     return (
         <div className="homepage-container">
             {/* Navigation */}
             <nav className="homepage-nav">
-                <div className="homepage-brand">The Vyans</div>
-                {/* Hamburger icon for mobile */}
-                <button
-                    className="homepage-hamburger"
-                    aria-label="Toggle navigation"
-                    onClick={() => setNavOpen(!navOpen)}
-                >
-                    <svg width="28" height="28" viewBox="0 0 28 28">
-                        <rect y="6" width="28" height="3" rx="1.5" fill="#222"/>
-                        <rect y="13" width="28" height="3" rx="1.5" fill="#222"/>
-                        <rect y="20" width="28" height="3" rx="1.5" fill="#222"/>
-                    </svg>
-                </button>
-                {/* Nav Links */}
+                <div className="homepage-brand">{navText.brand}</div>
+                <div className="homepage-nav-actions">
+                    <button
+                        className="homepage-lang-btn"
+                        onClick={() => setHindi(h => !h)}
+                    >
+                        {hindi ? "English" : "हिन्दी"}
+                    </button>
+                    <button
+                        className="homepage-hamburger"
+                        aria-label="Toggle navigation"
+                        onClick={() => setNavOpen(!navOpen)}
+                    >
+                        <svg width="28" height="28" viewBox="0 0 28 28">
+                            <rect y="6" width="28" height="3" rx="1.5" fill="#222"/>
+                            <rect y="13" width="28" height="3" rx="1.5" fill="#222"/>
+                            <rect y="20" width="28" height="3" rx="1.5" fill="#222"/>
+                        </svg>
+                    </button>
+                </div>
                 <div
                     className={`homepage-nav-links${navOpen ? ' open' : ''}`}
                 >
-                    <a href="#about" className="homepage-nav-link" onClick={()=>setNavOpen(false)}>About</a>
-                    <a href="#posts" className="homepage-nav-link" onClick={()=>setNavOpen(false)}>Posts</a>
-                    <a href="#contact" className="homepage-nav-link" onClick={()=>setNavOpen(false)}>Contact</a>
+                    <a href="#about" className="homepage-nav-link" onClick={()=>setNavOpen(false)}>{navText.about}</a>
+                    <a href="#contact" className="homepage-nav-link" onClick={()=>setNavOpen(false)}>{navText.contact}</a>
+                    <Link to="/login" className="homepage-nav-link" onClick={()=>setNavOpen(false)}>{navText.login}</Link>
                 </div>
             </nav>
 
             {/* About Section */}
             <section id="about" className="homepage-about-section">
                 <img
-                    src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=facearea&w=256&q=80"
+                    src={about.image}
                     alt="Profile"
                     className="homepage-about-img"
                 />
                 <div className="homepage-about-text">
-                    <h2>About Us</h2>
+                    <h2>{hindi ? "परिचय" : "About Us"}</h2>
                     <p>
-                        We are The Vyans, a team passionate about sharing knowledge and stories in technology, design, and innovation.
-                        Our blog is dedicated to providing valuable insights and inspiration for modern creators and thinkers.
+                        {hindi ? about.hindiContent : about.englishContent}
                     </p>
                 </div>
             </section>
@@ -173,7 +195,7 @@ function Homepage() {
 
             {/* Contact Section */}
             <section id="contact" className="homepage-contact">
-                <div className="homepage-contact-title">Contact Us</div>
+                <div className="homepage-contact-title">{contactTitle}</div>
                 <form className="homepage-contact-form">
                     <input type="text" placeholder="Your Name" className="homepage-input" />
                     <input type="email" placeholder="Your Email" className="homepage-input" />
@@ -184,7 +206,7 @@ function Homepage() {
 
             {/* Footer */}
             <footer className="homepage-footer">
-                &copy; {new Date().getFullYear()} The Vyans. All rights reserved.
+                {footerText}
             </footer>
         </div>
     )
