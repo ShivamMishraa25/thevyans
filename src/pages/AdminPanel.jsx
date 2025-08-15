@@ -8,8 +8,8 @@ function AdminPanel() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (!user) navigate('/login')
-  }, [user, navigate])
+    if (!user || !user.token) navigate('/login');
+  }, [user, navigate]);
 
   // State for new post
   const [post, setPost] = useState({
@@ -78,12 +78,18 @@ function AdminPanel() {
       formData.append('videos', vid);
     });
     try {
-      // TODO: Replace with your backend endpoint for posts
       const res = await fetch('http://localhost:5100/post', {
         method: 'POST',
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        },
         body: formData
       });
       const data = await res.json();
+      if (res.status === 401) {
+        navigate('/login');
+        return;
+      }
       if (res.ok) {
         alert('Post submitted!\n' + JSON.stringify(data, null, 2));
         setPost({
@@ -126,9 +132,16 @@ function AdminPanel() {
     try {
       const res = await fetch("http://localhost:5100/about", {
         method: "PUT",
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        },
         body: formData
       });
       const data = await res.json();
+      if (res.status === 401) {
+        navigate('/login');
+        return;
+      }
       if (res.ok) {
         alert("About section updated!\n" + JSON.stringify(data, null, 2));
       } else {

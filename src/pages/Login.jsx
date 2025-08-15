@@ -9,19 +9,25 @@ function Login() {
   const { login } = useAuth()
   const navigate = useNavigate()
 
-  const handleSubmit = e => {
-    e.preventDefault()
-    // TODO: Authenticate user
-    login(username)
-    navigate('/admin')
-    setUsername('')
-    setPassword('')
+  const [error, setError] = useState('');
+  const handleSubmit = async e => {
+    e.preventDefault();
+    setError('');
+    const result = await login(username, password);
+    if (result.success) {
+      navigate('/admin');
+      setUsername('');
+      setPassword('');
+    } else {
+      setError(result.message);
+    }
   }
 
   return (
     <div className="login-container">
       <form className="login-form" onSubmit={handleSubmit}>
         <h2 className="login-title">Admin Login</h2>
+        {error && <div style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
         <input
           className="login-input"
           type="text"
