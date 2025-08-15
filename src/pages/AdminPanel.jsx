@@ -17,11 +17,10 @@ function AdminPanel() {
     date: '',
     author: '',
     content: '',
-    images: [],
-    videos: []
+    images: [], // will hold File objects
+    videos: [] // will hold YouTube share links
   })
-  const [imageInput, setImageInput] = useState('')
-  const [videoInput, setVideoInput] = useState('')
+  const [postLoading, setPostLoading] = useState(false);
 
   // State for about section
   const [about, setAbout] = useState({
@@ -35,36 +34,75 @@ function AdminPanel() {
   const handlePostChange = e => {
     setPost({ ...post, [e.target.name]: e.target.value })
   }
+
+  const handleImageFilesChange = e => {
+    setPost({ ...post, images: Array.from(e.target.files) });
+  }
+
+  const handleAddVideo = e => {
+    e.preventDefault();
+    const videoUrl = post.videoInput?.trim();
+    if (videoUrl) {
+      setPost({ ...post, videos: [...post.videos, videoUrl], videoInput: '' });
+    }
+  }
+
+  const handleVideoInputChange = e => {
+    setPost({ ...post, videoInput: e.target.value });
+  }
   const handleAddImage = () => {
     if (imageInput.trim()) {
       setPost({ ...post, images: [...post.images, imageInput.trim()] })
       setImageInput('')
     }
   }
-  const handleAddVideo = () => {
-    if (videoInput.trim()) {
-      setPost({ ...post, videos: [...post.videos, videoInput.trim()] })
-      setVideoInput('')
-    }
-  }
+  // ...existing code...
   const handleRemoveImage = idx => {
-    setPost({ ...post, images: post.images.filter((_, i) => i !== idx) })
+    setPost({ ...post, images: post.images.filter((_, i) => i !== idx) });
   }
   const handleRemoveVideo = idx => {
-    setPost({ ...post, videos: post.videos.filter((_, i) => i !== idx) })
+    setPost({ ...post, videos: post.videos.filter((_, i) => i !== idx) });
   }
-  const handlePostSubmit = e => {
-    e.preventDefault()
-    // TODO: Save post to backend
-    alert('Post submitted!\n' + JSON.stringify(post, null, 2))
-    setPost({
-      title: '',
-      date: '',
-      author: '',
-      content: '',
-      images: [],
-      videos: []
-    })
+  const handlePostSubmit = async e => {
+    e.preventDefault();
+    setPostLoading(true);
+    const formData = new FormData();
+    formData.append('title', post.title);
+    formData.append('date', post.date);
+    formData.append('author', post.author);
+    formData.append('content', post.content);
+    post.images.forEach((img, idx) => {
+      formData.append('images', img);
+    });
+    post.videos.forEach((vid, idx) => {
+      formData.append('videos', vid);
+    });
+    try {
+      // TODO: Replace with your backend endpoint for posts
+      const res = await fetch('http://localhost:5100/post', {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert('Post submitted!\n' + JSON.stringify(data, null, 2));
+        setPost({
+          title: '',
+          date: '',
+          author: '',
+          content: '',
+          images: [],
+          videos: [],
+          videoInput: ''
+        });
+      } else {
+        alert('Error submitting post: ' + data.message);
+      }
+    } catch (err) {
+      alert('Error submitting post: ' + err.message);
+    } finally {
+      setPostLoading(false);
+    }
   }
 
   // Handlers for about
@@ -127,7 +165,6 @@ function AdminPanel() {
               placeholder="Date (e.g. June 2024)"
               value={post.date}
               onChange={handlePostChange}
-              required
             />
             <input
               className="admin-panel-input"
@@ -136,7 +173,6 @@ function AdminPanel() {
               placeholder="Author"
               value={post.author}
               onChange={handlePostChange}
-              required
             />
             <textarea
               className="admin-panel-textarea"
@@ -144,24 +180,23 @@ function AdminPanel() {
               placeholder="Content"
               value={post.content}
               onChange={handlePostChange}
-              required
             />
             {/* Images */}
             <div className="admin-panel-media-group">
               <input
                 className="admin-panel-input"
-                type="url"
-                placeholder="Image URL"
-                value={imageInput}
-                onChange={e => setImageInput(e.target.value)}
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleImageFilesChange}
+                disabled={postLoading}
               />
-              <button type="button" className="admin-panel-btn" onClick={handleAddImage}>Add Image</button>
             </div>
             <div className="admin-panel-media-list">
               {post.images.map((img, idx) => (
                 <div key={idx} className="admin-panel-media-item">
-                  <img src={img} alt={`img${idx}`} className="admin-panel-thumb" />
-                  <button type="button" className="admin-panel-remove-btn" onClick={() => handleRemoveImage(idx)}>Remove</button>
+                  <img src={typeof img === 'string' ? img : URL.createObjectURL(img)} alt={`img${idx}`} className="admin-panel-thumb" />
+                  <button type="button" className="admin-panel-remove-btn" onClick={() => handleRemoveImage(idx)} disabled={postLoading}>Remove</button>
                 </div>
               ))}
             </div>
@@ -170,21 +205,25 @@ function AdminPanel() {
               <input
                 className="admin-panel-input"
                 type="url"
-                placeholder="YouTube Embed Link"
-                value={videoInput}
-                onChange={e => setVideoInput(e.target.value)}
+                placeholder="YouTube Share Link"
+                name="videoInput"
+                value={post.videoInput || ''}
+                onChange={handleVideoInputChange}
+                disabled={postLoading}
               />
-              <button type="button" className="admin-panel-btn" onClick={handleAddVideo}>Add Video</button>
+              <button type="button" className="admin-panel-btn" onClick={handleAddVideo} disabled={postLoading}>Add Video</button>
             </div>
             <div className="admin-panel-media-list">
               {post.videos.map((vid, idx) => (
                 <div key={idx} className="admin-panel-media-item">
                   <span className="admin-panel-video-url">{vid}</span>
-                  <button type="button" className="admin-panel-remove-btn" onClick={() => handleRemoveVideo(idx)}>Remove</button>
+                  <button type="button" className="admin-panel-remove-btn" onClick={() => handleRemoveVideo(idx)} disabled={postLoading}>Remove</button>
                 </div>
               ))}
             </div>
-            <button type="submit" className="admin-panel-submit-btn">Submit Post</button>
+            <button type="submit" className="admin-panel-submit-btn" disabled={postLoading}>
+              {postLoading ? "Submitting..." : "Submit Post"}
+            </button>
           </form>
         </section>
         {/* Edit About Section */}
