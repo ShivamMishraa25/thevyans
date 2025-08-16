@@ -1,15 +1,76 @@
-import React, { useState, useEffect } from 'react'
-import '../css/admin.css'
-import { useAuth } from '../context/AuthContext.jsx'
-import { useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import '../css/admin.css';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext.jsx';
 
 function AdminPanel() {
-  const { user } = useAuth()
-  const navigate = useNavigate()
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  // State for posts list
+  const [posts, setPosts] = useState([]);
+  const [postsLoading, setPostsLoading] = useState(false);
+  const [postsError, setPostsError] = useState('');
+  const [postsPage, setPostsPage] = useState(1);
+  const POSTS_PER_PAGE = 5;
 
   useEffect(() => {
     if (!user || !user.token) navigate('/login');
   }, [user, navigate]);
+
+  const fetchPosts = async () => {
+    if (!user || !user.token) return;
+    setPostsLoading(true);
+    setPostsError('');
+    try {
+      const res = await fetch('http://localhost:5100/posts', {
+        headers: { Authorization: `Bearer ${user.token}` }
+      });
+      if (res.status === 401) {
+        navigate('/login');
+        return;
+      }
+      const data = await res.json();
+      if (res.ok) {
+        // Sort by latest first (assuming _id is ObjectId)
+        setPosts(data.sort((a, b) => b._id.localeCompare(a._id)));
+      } else {
+        setPostsError(data.message || 'Failed to fetch posts');
+      }
+    } catch (err) {
+      setPostsError(err.message);
+    } finally {
+      setPostsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPosts();
+    // eslint-disable-next-line
+  }, [user, navigate]);
+
+  const handleDeletePost = async (postId) => {
+    if (!window.confirm('Are you sure you want to delete this post?')) return;
+    try {
+      const res = await fetch(`http://localhost:5100/posts/${postId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${user.token}` }
+      });
+      if (res.status === 401) {
+        navigate('/login');
+        return;
+      }
+      const data = await res.json();
+      if (res.ok) {
+        // Refetch posts after delete
+        fetchPosts();
+      } else {
+        alert('Error deleting post: ' + data.message);
+      }
+    } catch (err) {
+      alert('Error deleting post: ' + err.message);
+    }
+  };
 
   // State for new post
   const [post, setPost] = useState({
@@ -19,7 +80,7 @@ function AdminPanel() {
     content: '',
     images: [], // will hold File objects
     videos: [] // will hold YouTube share links
-  })
+  });
   const [postLoading, setPostLoading] = useState(false);
 
   // State for about section
@@ -27,17 +88,17 @@ function AdminPanel() {
     image: null,
     englishContent: '',
     hindiContent: ''
-  })
+  });
   const [aboutLoading, setAboutLoading] = useState(false);
 
   // Handlers for post
   const handlePostChange = e => {
-    setPost({ ...post, [e.target.name]: e.target.value })
-  }
+    setPost({ ...post, [e.target.name]: e.target.value });
+  };
 
   const handleImageFilesChange = e => {
     setPost({ ...post, images: Array.from(e.target.files) });
-  }
+  };
 
   const handleAddVideo = e => {
     e.preventDefault();
@@ -45,24 +106,26 @@ function AdminPanel() {
     if (videoUrl) {
       setPost({ ...post, videos: [...post.videos, videoUrl], videoInput: '' });
     }
-  }
+  };
 
   const handleVideoInputChange = e => {
     setPost({ ...post, videoInput: e.target.value });
-  }
+  };
+
   const handleAddImage = () => {
     if (imageInput.trim()) {
-      setPost({ ...post, images: [...post.images, imageInput.trim()] })
-      setImageInput('')
+      setPost({ ...post, images: [...post.images, imageInput.trim()] });
+      setImageInput('');
     }
-  }
-  // ...existing code...
+  };
+
   const handleRemoveImage = idx => {
     setPost({ ...post, images: post.images.filter((_, i) => i !== idx) });
-  }
+  };
   const handleRemoveVideo = idx => {
     setPost({ ...post, videos: post.videos.filter((_, i) => i !== idx) });
-  }
+  };
+
   const handlePostSubmit = async e => {
     e.preventDefault();
     setPostLoading(true);
@@ -101,6 +164,8 @@ function AdminPanel() {
           videos: [],
           videoInput: ''
         });
+        // Refetch posts after new post
+        fetchPosts();
       } else {
         alert('Error submitting post: ' + data.message);
       }
@@ -109,7 +174,7 @@ function AdminPanel() {
     } finally {
       setPostLoading(false);
     }
-  }
+  };
 
   // Handlers for about
   const handleAboutChange = e => {
@@ -119,7 +184,7 @@ function AdminPanel() {
     } else {
       setAbout({ ...about, [name]: value });
     }
-  }
+  };
   const handleAboutSubmit = async e => {
     e.preventDefault();
     setAboutLoading(true);
@@ -152,7 +217,10 @@ function AdminPanel() {
     } finally {
       setAboutLoading(false);
     }
-  }
+  };
+
+  // Pagination logic
+  const paginatedPosts = posts.slice(0, postsPage * POSTS_PER_PAGE);
 
   return (
     <div className="admin-panel-container">
@@ -282,9 +350,32 @@ function AdminPanel() {
             </button>
           </form>
         </section>
+        {/* List All Posts */}
+        <section className="admin-panel-section">
+          <h2 className="admin-panel-section-title">All Posts</h2>
+          {postsLoading ? (
+            <div>Loading posts...</div>
+          ) : postsError ? (
+            <div style={{ color: 'red' }}>{postsError}</div>
+          ) : (
+            <>
+              <ul style={{ listStyle: 'none', padding: 0 }}>
+                {paginatedPosts.map(post => (
+                  <li key={post._id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.7rem', background: '#f4f6fa', borderRadius: '0.5rem', padding: '0.6rem 1rem' }}>
+                    <span style={{ fontWeight: 500 }}>{post.title}</span>
+                    <button className="admin-panel-remove-btn" onClick={() => handleDeletePost(post._id)} style={{ marginLeft: '1rem' }}>Delete</button>
+                  </li>
+                ))}
+              </ul>
+              {posts.length > paginatedPosts.length && (
+                <button className="admin-panel-btn" style={{ marginTop: '1rem' }} onClick={() => setPostsPage(postsPage + 1)}>More</button>
+              )}
+            </>
+          )}
+        </section>
       </div>
     </div>
-  )
+  );
 }
 
-export default AdminPanel
+export default AdminPanel;
