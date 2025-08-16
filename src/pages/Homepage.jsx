@@ -27,8 +27,8 @@ function Homepage() {
             setError('');
             try {
                 const [aboutRes, postsRes] = await Promise.all([
-                    fetch('https://thevyans-backend.onrender.com/about'),
-                    fetch('https://thevyans-backend.onrender.com/posts')
+                    fetch('http://localhost:5100/about'),
+                    fetch('http://localhost:5100/posts')
                 ]);
                 const aboutData = await aboutRes.json();
                 const postsData = await postsRes.json();
@@ -44,6 +44,16 @@ function Homepage() {
         }
         fetchData();
     }, []);
+
+    // Skeleton loader for About and Posts
+    function SectionSkeleton() {
+        return (
+            <div className="skeleton-fallback">
+                <div className="skeleton-header"></div>
+                <div className="skeleton-section"></div>
+            </div>
+        );
+    }
 
     return (
         <div className="homepage-container">
@@ -81,7 +91,7 @@ function Homepage() {
             {/* About Section */}
             <section id="about" className="homepage-about-section">
                 {loading ? (
-                    <div>Loading...</div>
+                    <SectionSkeleton />
                 ) : error ? (
                     <div style={{ color: 'red' }}>{error}</div>
                 ) : about ? (
@@ -104,7 +114,7 @@ function Homepage() {
             {/* Posts Section */}
             <section id="posts" className="homepage-posts">
                 {loading ? (
-                    <div>Loading...</div>
+                    <SectionSkeleton />
                 ) : error ? (
                     <div style={{ color: 'red' }}>{error}</div>
                 ) : posts.length > 0 ? (
