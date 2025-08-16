@@ -5,24 +5,29 @@
     min-height: 100vh;
     margin: 0;
     padding: 0;
-}
+
 
 .homepage-nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1rem 1.5rem;
-    background: #fff;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    background: linear-gradient(90deg, #23406e 0%, #1a2a47 100%);
+    color: #f4f6fa;
+    box-shadow: 0 2px 12px rgba(34,64,110,0.10);
     font-weight: 500;
     font-size: 1.1rem;
-    position: relative;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    transition: background 0.18s, color 0.18s, box-shadow 0.18s;
 }
 
 .homepage-brand {
     font-weight: 700;
     font-size: 1.3rem;
     letter-spacing: 0.5px;
+    color: #f4f6fa;
 }
 
 .homepage-nav-links {
@@ -33,12 +38,12 @@
 
 .homepage-nav-link {
     text-decoration: none;
-    color: #222;
-    transition: color 0.2s;
+    color: #f4f6fa;
+    transition: color 0.18s;
 }
 
 .homepage-nav-link:hover {
-    color: #0077ff;
+    color: #e3eaf3;
 }
 
 .homepage-nav-actions {
@@ -94,9 +99,9 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: #fff;
+    background: linear-gradient(90deg, #f7f8fa 0%, #e3eaf3 100%);
     border-radius: 1rem;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    box-shadow: 0 2px 16px rgba(34,64,110,0.08);
     padding: 2.5rem 3rem;
     margin: 2rem auto;
     max-width: 900px;
@@ -120,11 +125,13 @@
 
 .homepage-about-text h2 {
     margin-bottom: 0.7rem;
+    color: #23406e;
 }
 
 .homepage-about-text p {
     font-size: 1.08rem;
     line-height: 1.7;
+    color: #1a2a47;
 }
 
 .homepage-posts {
@@ -132,12 +139,14 @@
     margin: 2rem auto;
     display: grid;
     gap: 2rem;
+    background: linear-gradient(90deg, #f7f8fa 0%, #e3eaf3 100%);
+    border-radius: 1rem;
 }
 
 .homepage-post {
     background: #fff;
     border-radius: 1rem;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    box-shadow: 0 2px 12px rgba(34,64,110,0.08);
     padding: 2rem;
     transition: box-shadow 0.2s;
 }
@@ -146,17 +155,19 @@
     font-size: 1.4rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
+    color: #23406e;
 }
 
 .homepage-post-meta {
     font-size: 0.95rem;
-    color: #888;
+    color: #23406e;
     margin-bottom: 1rem;
 }
 
 .homepage-post-content {
     font-size: 1.05rem;
     line-height: 1.7;
+    color: #1a2a47;
 }
 
 .homepage-post-media {
@@ -195,9 +206,9 @@
 .homepage-contact {
     max-width: 900px;
     margin: 2rem auto;
-    background: #fff;
+    background: linear-gradient(90deg, #f7f8fa 0%, #e3eaf3 100%);
     border-radius: 1rem;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    box-shadow: 0 2px 12px rgba(34,64,110,0.08);
     padding: 2rem 3rem;
 }
 
@@ -205,6 +216,7 @@
     font-size: 1.2rem;
     font-weight: 600;
     margin-bottom: 1rem;
+    color: #23406e;
 }
 
 .homepage-contact-form {
@@ -216,36 +228,90 @@
 .homepage-input {
     padding: 0.8rem;
     border-radius: 0.5rem;
-    border: 1px solid #ddd;
+    border: 1px solid #23406e;
     font-size: 1rem;
+    background: #f4f6fa;
+    color: #1a2a47;
 }
 
 .homepage-textarea {
     min-height: 100px;
+    background: #f4f6fa;
+    color: #1a2a47;
 }
 
 .homepage-button {
     padding: 0.9rem 2rem;
     border-radius: 0.5rem;
-    border: none;
-    background: #0077ff;
-    color: #fff;
+    border: 1.5px solid #23406e;
+    background: linear-gradient(90deg, #23406e 0%, #1a2a47 100%);
+    color: #f4f6fa;
     font-weight: 600;
     font-size: 1rem;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.18s, color 0.18s, border 0.18s;
 }
 
 .homepage-button:hover {
-    background: #005fcc;
+    background: linear-gradient(90deg, #1a2a47 0%, #23406e 100%);
+    color: #e3eaf3;
+    border-color: #1a2a47;
+}
+
+
+.homepage-more-posts-btn {
+    padding: 0.85rem 2.2rem;
+    border-radius: 0.38rem;
+    border: 1.5px solid #23406e;
+    background: linear-gradient(90deg, #23406e 0%, #1a2a47 100%);
+    color: #f4f6fa;
+    font-weight: 500;
+    font-size: 1.08rem;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s, border 0.18s, box-shadow 0.18s;
+    box-shadow: 0 2px 12px rgba(34,64,110,0.10);
+    margin: 0 auto 0 auto;
+    display: block;
+    outline: none;
+    font-family: inherit;
+    text-transform: uppercase;
+}
+
+.homepage-more-posts-btn:hover {
+    background: linear-gradient(90deg, #1a2a47 0%, #23406e 100%);
+    color: #e3eaf3;
+    border-color: #1a2a47;
+    box-shadow: 0 4px 18px rgba(34,64,110,0.16);
+}
+
+.homepage-more-posts-btn:active {
+    background: #18223a;
+    color: #dde3ed;
+    border-color: #18223a;
+    box-shadow: 0 2px 8px rgba(34,64,110,0.10);
 }
 
 .homepage-footer {
     text-align: center;
     padding: 2rem 0 1rem 0;
-    color: #888;
+    color: #f4f6fa;
     font-size: 1rem;
-    background: none;
+    background: linear-gradient(90deg, #23406e 0%, #1a2a47 100%);
+}
+
+/* Hamburger icon color for dark nav */
+.homepage-hamburger {
+    color: #f4f6fa;
+}
+
+/* Dropdown nav link color for white background */
+.homepage-nav-links.open .homepage-nav-link {
+    color: #23406e;
+}
+.homepage-nav-links.open .homepage-nav-link:hover {
+    color: #0077ff;
+}
 }
 
 /* Responsive styles */
@@ -262,7 +328,7 @@
         background: #fff;
         flex-direction: column;
         gap: 1.5rem;
-        padding: 1.5rem 0;
+        padding: 1.5rem 1em;
         box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         z-index: 10;
     }
@@ -273,5 +339,129 @@
         flex-direction: column !important;
         text-align: center !important;
         padding: 2rem 1rem !important;
+    }
+}
+
+.homepage-img-modal {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(34,64,110,0.85);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.2s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.homepage-img-modal-content {
+    position: relative;
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 4px 32px rgba(34,64,110,0.18);
+    padding: 1.5rem;
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.homepage-img-modal-img {
+    max-width: 80vw;
+    max-height: 70vh;
+    border-radius: 0.7rem;
+    box-shadow: 0 2px 16px rgba(34,64,110,0.12);
+    margin-bottom: 1.2rem;
+}
+
+.homepage-img-modal-download {
+    display: inline-block;
+    padding: 0.7rem 1.6rem;
+    border-radius: 0.4rem;
+    background: linear-gradient(90deg, #23406e 0%, #1a2a47 100%);
+    color: #f4f6fa;
+    font-weight: 600;
+    font-size: 1.08rem;
+    text-decoration: none;
+    margin-bottom: 0.8rem;
+    transition: background 0.18s, color 0.18s;
+    box-shadow: 0 2px 8px rgba(34,64,110,0.10);
+}
+
+.homepage-img-modal-download:hover {
+    background: linear-gradient(90deg, #1a2a47 0%, #23406e 100%);
+    color: #e3eaf3;
+}
+
+.homepage-img-modal-close {
+    position: absolute;
+    top: -0.2rem;
+    right: 0.3rem;
+    background: none;
+    border: none;
+    font-size: 2.2rem;
+    color: #23406e;
+    cursor: pointer;
+    font-weight: bold;
+    line-height: 1;
+    z-index: 2;
+    transition: color 0.18s;
+}
+
+.homepage-img-modal-close:hover {
+    color: #0077ff;
+}
+
+.homepage-contact-links-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* gap: 2rem; */
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.homepage-contact-link-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #e3eaf3;
+    border-radius: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    color: #1a2a47;
+    text-decoration: none;
+    font-size: 1.08rem;
+    font-weight: 500;
+    box-shadow: 0 1px 6px rgba(34,64,110,0.06);
+    transition: background 0.18s, color 0.18s;
+}
+
+.homepage-contact-link-row:hover {
+    background: #d0e2ff;
+    color: #0077ff;
+}
+
+.homepage-contact-link-label {
+    color: #23406e;
+    font-weight: 600;
+    margin-right: 0.3rem;
+    font-size: 1.08rem;
+}
+
+@media (max-width: 700px) {
+    .homepage-contact-links-row {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: stretch;
+    }
+    .homepage-contact-link-row {
+        justify-content: flex-start;
+        font-size: 1rem;
+        padding: 0.7rem 1rem;
     }
 }

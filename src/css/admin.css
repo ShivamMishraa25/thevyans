@@ -153,6 +153,36 @@
     background: #0077ff;
 }
 
+.admin-panel-header-actions {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.admin-panel-posts-list {
+    list-style: none;
+    padding: 0;
+}
+
+.admin-panel-posts-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.7rem;
+    background: #f4f6fa;
+    border-radius: 0.5rem;
+    padding: 0.6rem 1rem;
+}
+
+.admin-panel-post-title {
+    font-weight: 500;
+}
+
+.admin-panel-more-btn {
+    margin-top: 1rem;
+}
+
 /* Responsive */
 @media (max-width: 900px) {
     .admin-panel-sections {

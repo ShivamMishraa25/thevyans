@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 
 function AdminPanel() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   // State for posts list
@@ -224,6 +224,10 @@ function AdminPanel() {
 
   return (
     <div className="admin-panel-container">
+      <div className="admin-panel-header-actions">
+        <button className="admin-panel-btn" onClick={() => navigate('/')}>Go to Homepage</button>
+        <button className="admin-panel-btn" onClick={logout}>Logout</button>
+      </div>
       <h1 className="admin-panel-title">Admin Panel</h1>
       <div className="admin-panel-sections">
         {/* Upload New Post */}
@@ -359,16 +363,16 @@ function AdminPanel() {
             <div style={{ color: 'red' }}>{postsError}</div>
           ) : (
             <>
-              <ul style={{ listStyle: 'none', padding: 0 }}>
+              <ul className="admin-panel-posts-list">
                 {paginatedPosts.map(post => (
-                  <li key={post._id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.7rem', background: '#f4f6fa', borderRadius: '0.5rem', padding: '0.6rem 1rem' }}>
-                    <span style={{ fontWeight: 500 }}>{post.title}</span>
-                    <button className="admin-panel-remove-btn" onClick={() => handleDeletePost(post._id)} style={{ marginLeft: '1rem' }}>Delete</button>
+                  <li key={post._id} className="admin-panel-posts-list-item">
+                    <span className="admin-panel-post-title">{post.title}</span>
+                    <button className="admin-panel-remove-btn" onClick={() => handleDeletePost(post._id)}>Delete</button>
                   </li>
                 ))}
               </ul>
               {posts.length > paginatedPosts.length && (
-                <button className="admin-panel-btn" style={{ marginTop: '1rem' }} onClick={() => setPostsPage(postsPage + 1)}>More</button>
+                <button className="admin-panel-btn admin-panel-more-btn" onClick={() => setPostsPage(postsPage + 1)}>More</button>
               )}
             </>
           )}

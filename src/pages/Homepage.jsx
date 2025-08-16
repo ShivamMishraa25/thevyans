@@ -1,134 +1,49 @@
-import React, { useState } from 'react'
-import Post from '../components/Post.jsx'
+import React, { useState, useEffect } from 'react';
+import Post from '../components/Post.jsx';
 import { Link } from 'react-router-dom';
 
 function Homepage() {
-    // 10 posts, some with multiple images/videos/mix
-    const posts = [
-        {
-            title: "Welcome to The Vyans Blog",
-            date: "June 2024",
-            author: "Admin",
-            content: "Discover insights, stories, and updates from our team. Stay tuned for regular posts on technology, design, and more.",
-            images: [
-                "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80"
-            ]
-        },
-        {
-            title: "Modern UI/UX Trends",
-            date: "May 2024",
-            author: "Jane Doe",
-            content: "Explore the latest trends in user interface and experience design. Learn how to create aesthetic and functional web applications.",
-            videos: [
-                "https://www.youtube.com/embed/3tmd-ClpJxA"
-            ]
-        },
-        {
-            title: "Our Team Retreat",
-            date: "April 2024",
-            author: "Team Vyans",
-            content: "A glimpse into our recent team retreat. Collaboration, fun, and new ideas!",
-            images: [
-                "https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=600&q=80",
-                "https://picsum.photos/id/237/200/300"
-            ]
-        },
-        {
-            title: "React Tips & Tricks",
-            date: "March 2024",
-            author: "John Smith",
-            content: "Boost your React productivity with these essential tips and tricks.",
-            videos: [
-                "https://www.youtube.com/embed/dGcsHMXbSOA",
-                "https://www.youtube.com/embed/Ke90Tje7VS0"
-            ]
-        },
-        {
-            title: "Design Inspiration",
-            date: "February 2024",
-            author: "Emily Lee",
-            content: "Check out some of our favorite design inspirations this month.",
-            images: [
-                "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80",
-                "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80"
-            ]
-        },
-        {
-            title: "How We Work Remotely",
-            date: "January 2024",
-            author: "Remote Team",
-            content: "Tips and tools for effective remote collaboration.",
-            images: [
-                "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=600&q=80"
-            ],
-            videos: [
-                "https://www.youtube.com/embed/ysz5S6PUM-U"
-            ]
-        },
-        {
-            title: "Tech Stack 2024",
-            date: "December 2023",
-            author: "Tech Lead",
-            content: "Our favorite technologies for building modern web apps.",
-            images: [
-                "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80"
-            ]
-        },
-        {
-            title: "Celebrating Achievements",
-            date: "November 2023",
-            author: "HR",
-            content: "Celebrating our team's milestones and achievements.",
-            images: [
-                "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80",
-                "https://images.unsplash.com/photo-1465101178521-c1a4c8a0a8b7?auto=format&fit=crop&w=600&q=80"
-            ],
-            videos: [
-                "https://www.youtube.com/embed/ScMzIvxBSi4"
-            ]
-        },
-        {
-            title: "Frontend vs Backend",
-            date: "October 2023",
-            author: "Dev Team",
-            content: "A fun comparison between frontend and backend development.",
-            videos: [
-                "https://www.youtube.com/embed/tgbNymZ7vqY"
-            ]
-        },
-        {
-            title: "Year in Review",
-            date: "September 2023",
-            author: "Editor",
-            content: "A look back at our favorite moments and posts from the past year.",
-            images: [
-                "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80",
-                "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80"
-            ],
-            videos: [
-                "https://www.youtube.com/embed/3tmd-ClpJxA",
-                "https://www.youtube.com/embed/dGcsHMXbSOA"
-            ]
-        }
-    ];
-
-    const about = {
-        image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=facearea&w=256&q=80",
-        englishContent: "We are The Vyans, a team passionate about sharing knowledge and stories in technology, design, and innovation. Our blog is dedicated to providing valuable insights and inspiration for modern creators and thinkers.",
-        hindiContent: "हम द व्यांस हैं, जो तकनीक, डिज़ाइन और नवाचार में ज्ञान और कहानियाँ साझा करने के लिए समर्पित हैं। हमारा ब्लॉग आधुनिक रचनाकारों और विचारकों के लिए मूल्यवान जानकारी और प्रेरणा प्रदान करता है।"
-    }
-
-    const [navOpen, setNavOpen] = useState(false)
-    const [hindi, setHindi] = useState(false)
+    const [navOpen, setNavOpen] = useState(false);
+    const [hindi, setHindi] = useState(false);
+    const [about, setAbout] = useState(null);
+    const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+    const [visibleCount, setVisibleCount] = useState(5);
+    const [fullscreenImg, setFullscreenImg] = useState(null);
 
     // Hindi/English text for nav, contact, footer, brand
     const navText = hindi
         ? { brand: "द व्यांस", about: "परिचय", contact: "संपर्क", login: "लॉगिन" }
-        : { brand: "The Vyans", about: "About", contact: "Contact", login: "Login" }
-    const contactTitle = hindi ? "संपर्क करें" : "Contact Us"
+        : { brand: "The Vyans", about: "About", contact: "Contact", login: "Login" };
+    const contactTitle = hindi ? "संपर्क करें" : "Contact Us";
     const footerText = hindi
         ? `© ${new Date().getFullYear()} द व्यांस. सर्वाधिकार सुरक्षित.`
-        : `© ${new Date().getFullYear()} The Vyans. All rights reserved.`
+        : `© ${new Date().getFullYear()} The Vyans. All rights reserved.`;
+
+    useEffect(() => {
+        async function fetchData() {
+            setLoading(true);
+            setError('');
+            try {
+                const [aboutRes, postsRes] = await Promise.all([
+                    fetch('https://thevyans-backend.onrender.com/about'),
+                    fetch('https://thevyans-backend.onrender.com/posts')
+                ]);
+                const aboutData = await aboutRes.json();
+                const postsData = await postsRes.json();
+                if (!aboutRes.ok) throw new Error(aboutData.message || 'Failed to fetch about');
+                if (!postsRes.ok) throw new Error(postsData.message || 'Failed to fetch posts');
+                setAbout(aboutData);
+                setPosts(postsData.sort((a, b) => b._id.localeCompare(a._id)));
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchData();
+    }, []);
 
     return (
         <div className="homepage-container">
@@ -148,9 +63,9 @@ function Homepage() {
                         onClick={() => setNavOpen(!navOpen)}
                     >
                         <svg width="28" height="28" viewBox="0 0 28 28">
-                            <rect y="6" width="28" height="3" rx="1.5" fill="#222"/>
-                            <rect y="13" width="28" height="3" rx="1.5" fill="#222"/>
-                            <rect y="20" width="28" height="3" rx="1.5" fill="#222"/>
+                            <rect y="6" width="28" height="3" rx="1.5" fill="#fff"/>
+                            <rect y="13" width="28" height="3" rx="1.5" fill="#fff"/>
+                            <rect y="20" width="28" height="3" rx="1.5" fill="#fff"/>
                         </svg>
                     </button>
                 </div>
@@ -165,43 +80,129 @@ function Homepage() {
 
             {/* About Section */}
             <section id="about" className="homepage-about-section">
-                <img
-                    src={about.image}
-                    alt="Profile"
-                    className="homepage-about-img"
-                />
-                <div className="homepage-about-text">
-                    <h2>{hindi ? "परिचय" : "About Us"}</h2>
-                    <p>
-                        {hindi ? about.hindiContent : about.englishContent}
-                    </p>
-                </div>
+                {loading ? (
+                    <div>Loading...</div>
+                ) : error ? (
+                    <div style={{ color: 'red' }}>{error}</div>
+                ) : about ? (
+                    <>
+                        <img
+                            src={about.image}
+                            alt="Profile"
+                            className="homepage-about-img"
+                        />
+                        <div className="homepage-about-text">
+                            <h2>{hindi ? "परिचय" : "About Us"}</h2>
+                            <p>
+                                {hindi ? about.hindiContent : about.englishContent}
+                            </p>
+                        </div>
+                    </>
+                ) : null}
             </section>
 
             {/* Posts Section */}
             <section id="posts" className="homepage-posts">
-                {posts.map((post, idx) => (
-                    <Post
-                        key={idx}
-                        title={post.title}
-                        date={post.date}
-                        author={post.author}
-                        content={post.content}
-                        images={post.images}
-                        videos={post.videos}
-                    />
-                ))}
+                {loading ? (
+                    <div>Loading...</div>
+                ) : error ? (
+                    <div style={{ color: 'red' }}>{error}</div>
+                ) : posts.length > 0 ? (
+                    <>
+                        {posts.slice(0, visibleCount).map((post, idx) => (
+                            <Post
+                                key={post._id || idx}
+                                title={post.title}
+                                date={post.date}
+                                author={post.author}
+                                content={post.content}
+                                images={post.images}
+                                videos={post.videos}
+                                onImageClick={img => setFullscreenImg(img)}
+                            />
+                        ))}
+                        {visibleCount < posts.length && (
+                            <button
+                                className="homepage-more-posts-btn"
+                                onClick={() => setVisibleCount(c => c + 5)}
+                                style={{ display: 'block' }}
+                            >
+                                {hindi ? "और पोस्ट्स" : "More Posts"}
+                            </button>
+                        )}
+                    </>
+                ) : (
+                    <div>No posts found.</div>
+                )}
             </section>
+
+            {/* Fullscreen Image Modal */}
+            {fullscreenImg && (
+                <div className="homepage-img-modal" onClick={() => setFullscreenImg(null)}>
+                    <div className="homepage-img-modal-content" onClick={e => e.stopPropagation()}>
+                        <img src={fullscreenImg} alt="Fullscreen" className="homepage-img-modal-img" />
+                        <button
+                            className="homepage-img-modal-download"
+                            onClick={async () => {
+                                try {
+                                    const response = await fetch(fullscreenImg, { mode: 'cors' });
+                                    const blob = await response.blob();
+                                    const url = window.URL.createObjectURL(blob);
+                                    const link = document.createElement('a');
+                                    link.href = url;
+                                    link.download = fullscreenImg.split('/').pop() || 'image.jpg';
+                                    document.body.appendChild(link);
+                                    link.click();
+                                    document.body.removeChild(link);
+                                    window.URL.revokeObjectURL(url);
+                                } catch (e) {
+                                    alert('Failed to download image.');
+                                }
+                            }}
+                        >
+                            {hindi ? "डाउनलोड करें" : "Download"}
+                        </button>
+                        <button className="homepage-img-modal-close" onClick={() => setFullscreenImg(null)}>&times;</button>
+                    </div>
+                </div>
+            )}
 
             {/* Contact Section */}
             <section id="contact" className="homepage-contact">
                 <div className="homepage-contact-title">{contactTitle}</div>
                 <form className="homepage-contact-form">
-                    <input type="text" placeholder="Your Name" className="homepage-input" />
-                    <input type="email" placeholder="Your Email" className="homepage-input" />
-                    <textarea placeholder="Your Message" className="homepage-input homepage-textarea" />
-                    <button type="submit" className="homepage-button">Send Message</button>
+                    <input
+                        type="text"
+                        placeholder={hindi ? "आपका नाम" : "Your Name"}
+                        className="homepage-input"
+                    />
+                    <input
+                        type="email"
+                        placeholder={hindi ? "आपका ईमेल" : "Your Email"}
+                        className="homepage-input"
+                    />
+                    <textarea
+                        placeholder={hindi ? "आपका संदेश" : "Your Message"}
+                        className="homepage-input homepage-textarea"
+                    />
+                    <button type="submit" className="homepage-button">
+                        {hindi ? "संदेश भेजें" : "Send Message"}
+                    </button>
                 </form>
+                <div className="homepage-contact-links-row">
+                    <a href="tel:+918299365307" className="homepage-contact-link-row">
+                        <span className="homepage-contact-link-label">{hindi ? "फोन:" : "Phone:"}</span>
+                        +91-8299365307
+                    </a>
+                    <a href="mailto:vyansgroup@gmail.com" className="homepage-contact-link-row">
+                        <span className="homepage-contact-link-label">{hindi ? "ईमेल:" : "Email:"}</span>
+                        vyansgroup@gmail.com
+                    </a>
+                    <a href="mailto:anshu@thevyans.com" className="homepage-contact-link-row">
+                        <span className="homepage-contact-link-label">{hindi ? "ईमेल:" : "Email:"}</span>
+                        anshu@thevyans.com
+                    </a>
+                </div>
             </section>
 
             {/* Footer */}
@@ -209,7 +210,7 @@ function Homepage() {
                 {footerText}
             </footer>
         </div>
-    )
+    );
 }
 
-export default Homepage
+export default Homepage;
