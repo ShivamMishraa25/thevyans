@@ -11,6 +11,7 @@ function Homepage() {
     const [error, setError] = useState('');
     const [visibleCount, setVisibleCount] = useState(5);
     const [fullscreenImg, setFullscreenImg] = useState(null);
+    const [result, setResult] = React.useState("");
 
     // Hindi/English text for nav, contact, footer, brand
     const navText = hindi
@@ -27,8 +28,8 @@ function Homepage() {
             setError('');
             try {
                 const [aboutRes, postsRes] = await Promise.all([
-                    fetch('http://localhost:5100/about'),
-                    fetch('http://localhost:5100/posts')
+                    fetch('https://thevyans.politebeach-89ca2b50.centralindia.azurecontainerapps.io/about'),
+                    fetch('https://thevyans.politebeach-89ca2b50.centralindia.azurecontainerapps.io/posts')
                 ]);
                 const aboutData = await aboutRes.json();
                 const postsData = await postsRes.json();
@@ -54,6 +55,30 @@ function Homepage() {
             </div>
         );
     }
+
+    // Form submission
+    const onSubmit = async (event) => {
+    event.preventDefault();
+    setResult("Sending....");
+    const formData = new FormData(event.target);
+
+    formData.append("access_key", "1634c43e-a896-4ee8-9af5-b72dd512d366");
+
+    const response = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      setResult(hindi? "संपर्क करने के लिए धन्यवाद|" : "Thank you for Contacting.");
+      event.target.reset();
+    } else {
+      console.log("Error", data);
+      setResult(data.message);
+    }
+  };
 
     return (
         <div className="homepage-container">
@@ -180,7 +205,7 @@ function Homepage() {
             {/* Contact Section */}
             <section id="contact" className="homepage-contact">
                 <div className="homepage-contact-title">{contactTitle}</div>
-                <form className="homepage-contact-form">
+                <form className="homepage-contact-form" onSubmit={onSubmit}>
                     <input
                         type="text"
                         placeholder={hindi ? "आपका नाम" : "Your Name"}
@@ -199,6 +224,7 @@ function Homepage() {
                         {hindi ? "संदेश भेजें" : "Send Message"}
                     </button>
                 </form>
+            <span>{result}</span>
                 <div className="homepage-contact-links-row">
                     <a href="tel:+918299365307" className="homepage-contact-link-row">
                         <span className="homepage-contact-link-label">{hindi ? "फोन:" : "Phone:"}</span>

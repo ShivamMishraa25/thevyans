@@ -56,7 +56,10 @@ const router = createBrowserRouter([
       </Suspense>
     )
   }
-])
+],
+{
+  basename: "/thevyans/"
+});
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

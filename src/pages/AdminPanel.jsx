@@ -23,7 +23,7 @@ function AdminPanel() {
     setPostsLoading(true);
     setPostsError('');
     try {
-      const res = await fetch('http://localhost:5100/posts', {
+      const res = await fetch('https://thevyans.politebeach-89ca2b50.centralindia.azurecontainerapps.io/posts', {
         headers: { Authorization: `Bearer ${user.token}` }
       });
       if (res.status === 401) {
@@ -52,7 +52,7 @@ function AdminPanel() {
   const handleDeletePost = async (postId) => {
     if (!window.confirm('Are you sure you want to delete this post?')) return;
     try {
-      const res = await fetch(`http://localhost:5100/posts/${postId}`, {
+      const res = await fetch(`https://thevyans.politebeach-89ca2b50.centralindia.azurecontainerapps.io/posts/${postId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${user.token}` }
       });
@@ -141,7 +141,7 @@ function AdminPanel() {
       formData.append('videos', vid);
     });
     try {
-      const res = await fetch('http://localhost:5100/post', {
+      const res = await fetch('https://thevyans.politebeach-89ca2b50.centralindia.azurecontainerapps.io/post', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${user.token}`
@@ -195,7 +195,7 @@ function AdminPanel() {
       formData.append("image", about.image);
     }
     try {
-      const res = await fetch("http://localhost:5100/about", {
+      const res = await fetch("https://thevyans.politebeach-89ca2b50.centralindia.azurecontainerapps.io/about", {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${user.token}`
