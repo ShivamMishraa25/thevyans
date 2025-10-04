@@ -210,6 +210,7 @@ function Homepage() {
                         type="text"
                         placeholder={hindi ? "आपका नाम" : "Your Name"}
                         className="homepage-input"
+                        required
                     />
                     <input
                         type="email"
@@ -219,6 +220,7 @@ function Homepage() {
                     <textarea
                         placeholder={hindi ? "आपका संदेश" : "Your Message"}
                         className="homepage-input homepage-textarea"
+                        required
                     />
                     <button type="submit" className="homepage-button">
                         {hindi ? "संदेश भेजें" : "Send Message"}
